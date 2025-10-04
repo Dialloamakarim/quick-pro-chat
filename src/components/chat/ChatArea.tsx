@@ -1,6 +1,7 @@
 import { Contact, Message } from "@/types/message";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
+import { WelcomeScreen } from "./WelcomeScreen";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Phone, Video } from "lucide-react";
@@ -37,14 +38,7 @@ export const ChatArea = ({
   };
 
   if (!contact) {
-    return (
-      <div className="flex items-center justify-center h-full bg-chat-bg">
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold text-foreground mb-2">Bienvenue sur QuickMessage</h2>
-          <p className="text-muted-foreground">Sélectionnez une conversation pour commencer</p>
-        </div>
-      </div>
-    );
+    return <WelcomeScreen />;
   }
 
   return (

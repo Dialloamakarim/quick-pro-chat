@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Users, RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getPhoneContacts, PhoneContact } from "@/utils/contactsManager";
+import { Capacitor } from "@capacitor/core";
 import {
   Dialog,
   DialogContent,
@@ -23,23 +24,44 @@ export const ContactSyncButton = ({ onContactsImported }: ContactSyncButtonProps
   const [isLoading, setIsLoading] = useState(false);
   const [phoneContacts, setPhoneContacts] = useState<PhoneContact[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isNative, setIsNative] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    setIsNative(Capacitor.isNativePlatform());
+  }, []);
+
   const handleSyncContacts = async () => {
+    if (!isNative) {
+      toast({
+        title: "Fonctionnalité mobile uniquement",
+        description: "L'accès aux contacts nécessite l'application mobile native.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const contacts = await getPhoneContacts();
       setPhoneContacts(contacts);
       onContactsImported?.(contacts);
       
-      toast({
-        title: "Contacts synchronisés",
-        description: `${contacts.length} contacts importés avec succès`,
-      });
+      if (contacts.length === 0) {
+        toast({
+          title: "Aucun contact trouvé",
+          description: "Aucun contact n'a été trouvé sur votre appareil.",
+        });
+      } else {
+        toast({
+          title: "Contacts synchronisés",
+          description: `${contacts.length} contact${contacts.length > 1 ? 's' : ''} importé${contacts.length > 1 ? 's' : ''} avec succès`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible d'accéder aux contacts. Vérifiez les permissions.",
+        description: "Impossible d'accéder aux contacts. Vérifiez les permissions dans les paramètres.",
         variant: "destructive",
       });
     } finally {
@@ -62,10 +84,17 @@ export const ContactSyncButton = ({ onContactsImported }: ContactSyncButtonProps
           variant="outline"
           size="sm"
           className="gap-2"
-          onClick={handleSyncContacts}
+          onClick={() => {
+            if (!isNative) {
+              handleSyncContacts();
+            } else {
+              setIsOpen(true);
+              handleSyncContacts();
+            }
+          }}
         >
           <Users className="h-4 w-4" />
-          Synchroniser contacts
+          {isNative ? "Contacts" : "Contacts (Mobile)"}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
