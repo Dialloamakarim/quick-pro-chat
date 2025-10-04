@@ -3,6 +3,7 @@ import { ContactItem } from "./ContactItem";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useState } from "react";
+import { ContactSyncButton } from "@/components/contacts/ContactSyncButton";
 
 interface ContactListProps {
   contacts: Contact[];
@@ -20,7 +21,10 @@ export const ContactList = ({ contacts, selectedContactId, onSelectContact }: Co
   return (
     <div className="flex flex-col h-full bg-background border-r border-border">
       <div className="p-4 border-b border-border">
-        <h1 className="text-2xl font-bold text-foreground mb-4">QuickMessage</h1>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-foreground">QuickMessage</h1>
+          <ContactSyncButton />
+        </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input

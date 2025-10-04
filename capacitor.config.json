@@ -1,0 +1,14 @@
+{
+  "appId": "app.lovable.55c54486e2bc4eabaf1f8a4bde6a7d67",
+  "appName": "QuickMessage",
+  "webDir": "dist",
+  "server": {
+    "url": "https://55c54486-e2bc-4eab-af1f-8a4bde6a7d67.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  },
+  "plugins": {
+    "Contacts": {
+      "permissions": ["contacts"]
+    }
+  }
+}

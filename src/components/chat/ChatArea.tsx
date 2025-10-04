@@ -4,6 +4,8 @@ import { MessageInput } from "./MessageInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Phone, Video } from "lucide-react";
+import { makePhoneCall } from "@/utils/contactsManager";
+import { useToast } from "@/hooks/use-toast";
 
 interface ChatAreaProps {
   contact: Contact | null;
@@ -20,6 +22,20 @@ export const ChatArea = ({
   onToggleRead,
   onAddReaction,
 }: ChatAreaProps) => {
+  const { toast } = useToast();
+
+  const handlePhoneCall = () => {
+    if (contact) {
+      // Simulate a phone number - in real app, this would come from contact data
+      const phoneNumber = "+33612345678";
+      makePhoneCall(phoneNumber);
+      toast({
+        title: "Appel en cours",
+        description: `Appel vers ${contact.name}...`,
+      });
+    }
+  };
+
   if (!contact) {
     return (
       <div className="flex items-center justify-center h-full bg-chat-bg">
@@ -55,7 +71,7 @@ export const ChatArea = ({
           <Button variant="ghost" size="icon">
             <Video className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handlePhoneCall}>
             <Phone className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon">
