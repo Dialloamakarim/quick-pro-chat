@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ContactList } from "@/components/chat/ContactList";
 import { ChatArea } from "@/components/chat/ChatArea";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { MobileOptimizations } from "@/components/MobileOptimizations";
 import { mockContacts, mockMessages } from "@/data/mockData";
 import { Message } from "@/types/message";
 
@@ -52,25 +53,30 @@ const Index = () => {
   const currentMessages = selectedContactId ? messages[selectedContactId] || [] : [];
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <ThemeToggle />
-      <div className="w-full md:w-96 flex-shrink-0">
-        <ContactList
-          contacts={mockContacts}
-          selectedContactId={selectedContactId}
-          onSelectContact={setSelectedContactId}
-        />
+    <>
+      <MobileOptimizations />
+      <div className="flex h-screen overflow-hidden bg-background">
+        <ThemeToggle />
+        {/* Mobile: Show contact list OR chat, not both */}
+        <div className={`w-full md:w-96 flex-shrink-0 ${selectedContactId ? 'hidden md:block' : 'block'}`}>
+          <ContactList
+            contacts={mockContacts}
+            selectedContactId={selectedContactId}
+            onSelectContact={setSelectedContactId}
+          />
+        </div>
+        <div className={`flex-1 ${selectedContactId ? 'block' : 'hidden md:block'}`}>
+          <ChatArea
+            contact={selectedContact}
+            messages={currentMessages}
+            onSendMessage={handleSendMessage}
+            onToggleRead={() => {}}
+            onAddReaction={handleAddReaction}
+            onBack={() => setSelectedContactId(null)}
+          />
+        </div>
       </div>
-      <div className="flex-1">
-        <ChatArea
-          contact={selectedContact}
-          messages={currentMessages}
-          onSendMessage={handleSendMessage}
-          onToggleRead={() => {}}
-          onAddReaction={handleAddReaction}
-        />
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -97,9 +97,26 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground;
+    touch-action: pan-y;
+  }
+
+  input, textarea, select {
+    font-size: 16px !important; /* Prevent iOS zoom on focus */
+  }
+
+  .mobile-optimized {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .mobile-optimized input,
+  .mobile-optimized textarea {
+    -webkit-user-select: text;
+    user-select: text;
   }
 }
