@@ -12,6 +12,7 @@ export interface Contact {
   name: string;
   avatar: string;
   online: boolean;
+  phoneNumber?: string;
   lastMessage?: string;
   lastMessageTime?: Date;
   unreadCount?: number;

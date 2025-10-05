@@ -28,13 +28,17 @@ export const ChatArea = ({
   const { toast } = useToast();
 
   const handlePhoneCall = () => {
-    if (contact) {
-      // Simulate a phone number - in real app, this would come from contact data
-      const phoneNumber = "+33612345678";
-      makePhoneCall(phoneNumber);
+    if (contact?.phoneNumber) {
+      makePhoneCall(contact.phoneNumber);
       toast({
         title: "Appel en cours",
         description: `Appel vers ${contact.name}...`,
+      });
+    } else {
+      toast({
+        title: "Numéro introuvable",
+        description: "Ce contact n'a pas de numéro de téléphone.",
+        variant: "destructive",
       });
     }
   };
