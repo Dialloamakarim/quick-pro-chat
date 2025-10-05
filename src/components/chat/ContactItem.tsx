@@ -14,9 +14,10 @@ export const ContactItem = ({ contact, isSelected, onClick }: ContactItemProps) 
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-3 p-4 cursor-pointer transition-colors hover:bg-muted/50 ${
+      className={`flex items-center gap-3 p-4 cursor-pointer transition-all duration-200 hover:bg-muted/50 active:bg-muted active:scale-[0.98] ${
         isSelected ? "bg-muted" : ""
       }`}
+      style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <div className="relative">
         <Avatar>

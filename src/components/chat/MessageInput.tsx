@@ -25,12 +25,22 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
   };
 
   return (
-    <div className="p-4 bg-background border-t border-border">
+    <div className="p-4 bg-background border-t border-border safe-bottom">
       <div className="flex items-end gap-2">
-        <Button variant="ghost" size="icon" className="shrink-0">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="shrink-0 touch-manipulation"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+        >
           <Smile className="h-5 w-5" />
         </Button>
-        <Button variant="ghost" size="icon" className="shrink-0">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="shrink-0 touch-manipulation"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+        >
           <Paperclip className="h-5 w-5" />
         </Button>
         <Input
@@ -43,7 +53,8 @@ export const MessageInput = ({ onSend }: MessageInputProps) => {
         <Button
           onClick={handleSend}
           size="icon"
-          className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90"
+          className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 touch-manipulation transition-transform"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           <Send className="h-5 w-5" />
         </Button>

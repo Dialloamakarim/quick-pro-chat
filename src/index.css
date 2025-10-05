@@ -103,6 +103,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     touch-action: pan-y;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   input, textarea, select {
@@ -118,5 +120,25 @@ All colors MUST be HSL.
   .mobile-optimized textarea {
     -webkit-user-select: text;
     user-select: text;
+  }
+  
+  /* Safe area padding for notched devices */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+  }
+  
+  /* Smooth scrolling for mobile */
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  /* Better touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
