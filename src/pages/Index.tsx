@@ -3,14 +3,19 @@ import { ContactList } from "@/components/chat/ContactList";
 import { ChatArea } from "@/components/chat/ChatArea";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { MobileOptimizations } from "@/components/MobileOptimizations";
-import { mockContacts, mockMessages } from "@/data/mockData";
-import { Message } from "@/types/message";
+import { NotificationSetup } from "@/components/NotificationSetup";
+import { mockContacts, mockMessages, mockGroups } from "@/data/mockData";
+import { Message, Conversation } from "@/types/message";
+import { usePersistedMessages } from "@/hooks/usePersistedMessages";
 
 const Index = () => {
   const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Record<string, Message[]>>(mockMessages);
+  const [messages, setMessages] = usePersistedMessages(mockMessages);
 
-  const handleSendMessage = (text: string) => {
+  // Combine contacts and groups for display
+  const allConversations: Conversation[] = [...mockContacts, ...mockGroups];
+
+  const handleSendMessage = (text: string, imageUrl?: string, audioUrl?: string, location?: { latitude: number; longitude: number }) => {
     if (!selectedContactId) return;
 
     const newMessage: Message = {
@@ -19,6 +24,9 @@ const Index = () => {
       text,
       timestamp: new Date(),
       read: false,
+      imageUrl,
+      audioUrl,
+      location,
     };
 
     setMessages((prev) => ({
@@ -49,18 +57,20 @@ const Index = () => {
     }));
   };
 
-  const selectedContact = mockContacts.find((c) => c.id === selectedContactId) || null;
+  const selectedContact = allConversations.find((c) => c.id === selectedContactId) || null;
   const currentMessages = selectedContactId ? messages[selectedContactId] || [] : [];
 
   return (
     <>
       <MobileOptimizations />
+      <NotificationSetup />
       <div className="flex h-screen overflow-hidden bg-background">
         <ThemeToggle />
         {/* Mobile: Show contact list OR chat, not both */}
         <div className={`w-full md:w-96 flex-shrink-0 ${selectedContactId ? 'hidden md:block' : 'block'}`}>
           <ContactList
             contacts={mockContacts}
+            conversations={allConversations}
             selectedContactId={selectedContactId}
             onSelectContact={setSelectedContactId}
           />

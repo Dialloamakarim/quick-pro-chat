@@ -78,6 +78,10 @@ npx cap open ios
 <uses-permission android:name="android.permission.READ_CONTACTS" />
 <uses-permission android:name="android.permission.CALL_PHONE" />
 <uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 ```
 
 #### iOS (`ios/App/App/Info.plist`)
@@ -86,6 +90,10 @@ npx cap open ios
 <string>QuickMessage a besoin d'accéder à vos contacts pour vous permettre de les appeler directement.</string>
 <key>NSPhoneCallUsageDescription</key>
 <string>QuickMessage a besoin d'accéder au téléphone pour passer des appels.</string>
+<key>NSCameraUsageDescription</key>
+<string>QuickMessage a besoin d'accéder à la caméra pour prendre des photos.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>QuickMessage a besoin d'accéder à vos photos pour partager des images.</string>
 ```
 
 ## 🔄 Développement continu
@@ -116,10 +124,12 @@ npx cap sync
 
 ✅ Accès aux contacts du téléphone
 ✅ Appels téléphoniques directs
-✅ Notifications push (à configurer)
+✅ Appareil photo et galerie photos
+✅ Notifications push locales
 ✅ Optimisations tactiles mobiles
 ✅ Mode sombre/clair automatique
 ✅ Interface plein écran
+✅ Persistance des données (localStorage)
 
 ## 🆘 Dépannage
 

@@ -1,16 +1,19 @@
-import { Contact } from "@/types/message";
+import { Conversation, isGroup } from "@/types/message";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Users } from "lucide-react";
 
 interface ContactItemProps {
-  contact: Contact;
+  contact: Conversation;
   isSelected: boolean;
   onClick: () => void;
 }
 
 export const ContactItem = ({ contact, isSelected, onClick }: ContactItemProps) => {
+  const isGroupConv = isGroup(contact);
+  
   return (
     <div
       onClick={onClick}
@@ -24,7 +27,11 @@ export const ContactItem = ({ contact, isSelected, onClick }: ContactItemProps) 
           <AvatarImage src={contact.avatar} alt={contact.name} />
           <AvatarFallback>{contact.name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
         </Avatar>
-        {contact.online && (
+        {isGroupConv ? (
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-accent border-2 border-background rounded-full flex items-center justify-center">
+            <Users className="h-2.5 w-2.5 text-accent-foreground" />
+          </div>
+        ) : !isGroupConv && contact.online && (
           <div className="absolute bottom-0 right-0 w-3 h-3 bg-online border-2 border-background rounded-full" />
         )}
       </div>

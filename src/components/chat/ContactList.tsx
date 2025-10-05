@@ -1,21 +1,31 @@
-import { Contact } from "@/types/message";
+import { Contact, Conversation } from "@/types/message";
 import { ContactItem } from "./ContactItem";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Users } from "lucide-react";
 import { useState } from "react";
 import { ContactSyncButton } from "@/components/contacts/ContactSyncButton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ContactListProps {
   contacts: Contact[];
+  conversations: Conversation[];
   selectedContactId: string | null;
   onSelectContact: (contactId: string) => void;
 }
 
-export const ContactList = ({ contacts, selectedContactId, onSelectContact }: ContactListProps) => {
+export const ContactList = ({ contacts, conversations, selectedContactId, onSelectContact }: ContactListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredConversations = conversations.filter((conv) =>
+    conv.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -23,7 +33,24 @@ export const ContactList = ({ contacts, selectedContactId, onSelectContact }: Co
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">QuickMessage</h1>
-          <ContactSyncButton />
+          <div className="flex gap-2">
+            <ContactSyncButton />
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <Users className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Créer un groupe</DialogTitle>
+                  <DialogDescription>
+                    Fonctionnalité à venir : Créez des groupes de discussion avec vos contacts
+                  </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -36,12 +63,12 @@ export const ContactList = ({ contacts, selectedContactId, onSelectContact }: Co
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {filteredContacts.map((contact) => (
+        {filteredConversations.map((conversation) => (
           <ContactItem
-            key={contact.id}
-            contact={contact}
-            isSelected={contact.id === selectedContactId}
-            onClick={() => onSelectContact(contact.id)}
+            key={conversation.id}
+            contact={conversation}
+            isSelected={conversation.id === selectedContactId}
+            onClick={() => onSelectContact(conversation.id)}
           />
         ))}
       </div>

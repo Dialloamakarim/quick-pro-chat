@@ -5,6 +5,13 @@ export interface Message {
   timestamp: Date;
   read: boolean;
   reactions?: string[];
+  imageUrl?: string;
+  audioUrl?: string;
+  location?: {
+    latitude: number;
+    longitude: number;
+  };
+  fileName?: string;
 }
 
 export interface Contact {
@@ -16,4 +23,20 @@ export interface Contact {
   lastMessage?: string;
   lastMessageTime?: Date;
   unreadCount?: number;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  avatar: string;
+  members: string[]; // Contact IDs
+  lastMessage?: string;
+  lastMessageTime?: Date;
+  unreadCount?: number;
+}
+
+export type Conversation = Contact | Group;
+
+export function isGroup(conversation: Conversation): conversation is Group {
+  return 'members' in conversation;
 }

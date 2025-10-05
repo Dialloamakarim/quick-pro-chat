@@ -1,4 +1,4 @@
-import { Contact, Message } from "@/types/message";
+import { Conversation, Message } from "@/types/message";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { WelcomeScreen } from "./WelcomeScreen";
@@ -9,9 +9,9 @@ import { makePhoneCall } from "@/utils/contactsManager";
 import { useToast } from "@/hooks/use-toast";
 
 interface ChatAreaProps {
-  contact: Contact | null;
+  contact: Conversation | null;
   messages: Message[];
-  onSendMessage: (text: string) => void;
+  onSendMessage: (text: string, imageUrl?: string, audioUrl?: string, location?: { latitude: number; longitude: number }) => void;
   onToggleRead: (messageId: string) => void;
   onAddReaction: (messageId: string, emoji: string) => void;
   onBack?: () => void;
@@ -28,7 +28,7 @@ export const ChatArea = ({
   const { toast } = useToast();
 
   const handlePhoneCall = () => {
-    if (contact?.phoneNumber) {
+    if (contact && 'phoneNumber' in contact && contact.phoneNumber) {
       makePhoneCall(contact.phoneNumber);
       toast({
         title: "Appel en cours",
@@ -37,7 +37,7 @@ export const ChatArea = ({
     } else {
       toast({
         title: "Numéro introuvable",
-        description: "Ce contact n'a pas de numéro de téléphone.",
+        description: "Impossible d'appeler un groupe.",
         variant: "destructive",
       });
     }
@@ -78,14 +78,14 @@ export const ChatArea = ({
               <AvatarImage src={contact.avatar} alt={contact.name} />
               <AvatarFallback>{contact.name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
             </Avatar>
-            {contact.online && (
+            {'online' in contact && contact.online && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-online border-2 border-background rounded-full" />
             )}
           </div>
           <div>
             <h2 className="font-semibold text-foreground">{contact.name}</h2>
             <p className="text-xs text-muted-foreground">
-              {contact.online ? "En ligne" : "Hors ligne"}
+              {'online' in contact ? (contact.online ? "En ligne" : "Hors ligne") : "Groupe"}
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { Contact, Message } from "@/types/message";
+import { Contact, Message, Group } from "@/types/message";
 
 export const mockContacts: Contact[] = [
   {
@@ -49,6 +49,27 @@ export const mockContacts: Contact[] = [
     phoneNumber: "+33656789012",
     lastMessage: "Super idée!",
     lastMessageTime: new Date(Date.now() - 24 * 60 * 60 * 1000),
+    unreadCount: 0,
+  },
+];
+
+export const mockGroups: Group[] = [
+  {
+    id: "g1",
+    name: "Équipe Projet",
+    avatar: "https://api.dicebear.com/7.x/initials/svg?seed=EP",
+    members: ["1", "2", "4"],
+    lastMessage: "On se retrouve demain à 10h",
+    lastMessageTime: new Date(Date.now() - 30 * 60 * 1000),
+    unreadCount: 3,
+  },
+  {
+    id: "g2",
+    name: "Famille",
+    avatar: "https://api.dicebear.com/7.x/initials/svg?seed=FA",
+    members: ["3", "5"],
+    lastMessage: "Bon anniversaire !",
+    lastMessageTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
     unreadCount: 0,
   },
 ];
@@ -105,6 +126,38 @@ export const mockMessages: Record<string, Message[]> = {
       text: "J'ai envoyé le document",
       timestamp: new Date(Date.now() - 15 * 60 * 1000),
       read: false,
+    },
+  ],
+  "g1": [
+    {
+      id: "mg1",
+      senderId: "2",
+      text: "Bonjour à tous!",
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      read: true,
+    },
+    {
+      id: "mg2",
+      senderId: "1",
+      text: "Salut! Comment avance le projet?",
+      timestamp: new Date(Date.now() - 90 * 60 * 1000),
+      read: true,
+    },
+    {
+      id: "mg3",
+      senderId: "4",
+      text: "On se retrouve demain à 10h",
+      timestamp: new Date(Date.now() - 30 * 60 * 1000),
+      read: false,
+    },
+  ],
+  "g2": [
+    {
+      id: "mg4",
+      senderId: "3",
+      text: "Bon anniversaire !",
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      read: true,
     },
   ],
 };
