@@ -2,11 +2,13 @@ import { Conversation, Message } from "@/types/message";
 import { MessageBubble } from "./MessageBubble";
 import { MessageInput } from "./MessageInput";
 import { WelcomeScreen } from "./WelcomeScreen";
+import { VoiceCallInterface } from "./VoiceCallInterface";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Phone, Video } from "lucide-react";
 import { makePhoneCall } from "@/utils/contactsManager";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface ChatAreaProps {
   contact: Conversation | null;
@@ -26,6 +28,7 @@ export const ChatArea = ({
   onBack,
 }: ChatAreaProps) => {
   const { toast } = useToast();
+  const [showVoiceCall, setShowVoiceCall] = useState(false);
 
   const handlePhoneCall = () => {
     if (contact && 'phoneNumber' in contact && contact.phoneNumber) {
@@ -90,7 +93,7 @@ export const ChatArea = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={() => setShowVoiceCall(true)}>
             <Video className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon" onClick={handlePhoneCall}>
@@ -114,6 +117,12 @@ export const ChatArea = ({
       </div>
 
       <MessageInput onSend={onSendMessage} />
+      
+      <VoiceCallInterface
+        open={showVoiceCall}
+        onClose={() => setShowVoiceCall(false)}
+        contactName={contact.name}
+      />
     </div>
   );
 };
