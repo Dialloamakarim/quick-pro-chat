@@ -3,7 +3,6 @@ import { Capacitor } from '@capacitor/core';
 
 export const takePhoto = async (): Promise<string | null> => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Camera is only available on native platforms');
     return null;
   }
 
@@ -24,7 +23,6 @@ export const takePhoto = async (): Promise<string | null> => {
 
 export const pickImageFromGallery = async (): Promise<string | null> => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Gallery is only available on native platforms');
     return null;
   }
 

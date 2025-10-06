@@ -4,7 +4,6 @@ import { Capacitor } from '@capacitor/core';
 
 export const initPushNotifications = async () => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Push notifications are only available on native platforms');
     return;
   }
 
@@ -52,7 +51,6 @@ export const initPushNotifications = async () => {
 
 export const initLocalNotifications = async () => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Local notifications are only available on native platforms');
     return;
   }
 
@@ -71,7 +69,6 @@ export const initLocalNotifications = async () => {
 
 export const showLocalNotification = async (title: string, body: string) => {
   if (!Capacitor.isNativePlatform()) {
-    console.log('Local notifications are only available on native platforms');
     return;
   }
 

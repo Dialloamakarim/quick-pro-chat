@@ -14,7 +14,7 @@ export function usePersistedMessages(initialMessages: Record<string, Message[]>)
     if (!storedData) {
       setMessages(initialMessages);
     }
-  }, []);
+  }, [initialMessages, setMessages]);
 
   return [messages, setMessages] as const;
 }
