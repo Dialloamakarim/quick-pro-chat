@@ -1,10 +1,11 @@
 import { Contact, Conversation } from "@/types/message";
 import { ContactItem } from "./ContactItem";
 import { Input } from "@/components/ui/input";
-import { Search, Users } from "lucide-react";
+import { Search, Users, Settings } from "lucide-react";
 import { useState } from "react";
 import { ContactSyncButton } from "@/components/contacts/ContactSyncButton";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ interface ContactListProps {
 
 export const ContactList = ({ contacts, conversations, selectedContactId, onSelectContact }: ContactListProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const filteredConversations = conversations.filter((conv) =>
     conv.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -34,6 +36,14 @@ export const ContactList = ({ contacts, conversations, selectedContactId, onSele
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">QuickMessage</h1>
           <div className="flex gap-2">
+            <Button 
+              size="icon" 
+              variant="ghost"
+              onClick={() => navigate('/settings')}
+              title="Paramètres"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
             <ContactSyncButton />
             <Dialog>
               <DialogTrigger asChild>
