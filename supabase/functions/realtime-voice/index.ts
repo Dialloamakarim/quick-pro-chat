@@ -27,7 +27,12 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         voice: "alloy",
-        instructions: "Tu es un assistant vocal amical pour une application de messagerie. Réponds aux questions de l'utilisateur de manière concise et naturelle en français."
+        messages: [
+          {
+            role: "system",
+            content: "Tu es un assistant vocal amical pour une application de messagerie. Réponds aux questions de l'utilisateur de manière concise et naturelle en français."
+          }
+        ]
       }),
     });
 
