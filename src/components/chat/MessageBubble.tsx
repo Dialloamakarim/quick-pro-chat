@@ -1,5 +1,5 @@
 import { Message } from "@/types/message";
-import { Check, CheckCheck, Smile } from "lucide-react";
+import { Check, CheckCheck, Smile, MoreVertical, EyeOff, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
@@ -9,17 +9,35 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface MessageBubbleProps {
   message: Message;
   isOwn: boolean;
   onAddReaction: (messageId: string, emoji: string) => void;
+  onHideMessage?: (messageId: string) => void;
+  onDeleteMessage?: (messageId: string) => void;
 }
 
 const EMOJI_OPTIONS = ["👍", "❤️", "😂", "😮", "😢", "🙏"];
 
-export const MessageBubble = ({ message, isOwn, onAddReaction }: MessageBubbleProps) => {
+export const MessageBubble = ({ message, isOwn, onAddReaction, onHideMessage, onDeleteMessage }: MessageBubbleProps) => {
   const [showReactions, setShowReactions] = useState(false);
+
+  if (message.hidden) {
+    return (
+      <div className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+        <div className="max-w-[70%] rounded-2xl px-4 py-2 bg-muted text-muted-foreground italic opacity-50">
+          <p className="text-sm">Message masqué</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex ${isOwn ? "justify-end" : "justify-start"} group`}>
@@ -94,35 +112,68 @@ export const MessageBubble = ({ message, isOwn, onAddReaction }: MessageBubblePr
           </div>
         )}
 
-        <Popover open={showReactions} onOpenChange={setShowReactions}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute -top-2 right-0 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6"
-            >
-              <Smile className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-2" side="top">
-            <div className="flex gap-1">
-              {EMOJI_OPTIONS.map((emoji) => (
+        <div className="absolute -top-2 right-0 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+          <Popover open={showReactions} onOpenChange={setShowReactions}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+              >
+                <Smile className="h-4 w-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-2" side="top">
+              <div className="flex gap-1">
+                {EMOJI_OPTIONS.map((emoji) => (
+                  <Button
+                    key={emoji}
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 hover:scale-125 transition-transform"
+                    onClick={() => {
+                      onAddReaction(message.id, emoji);
+                      setShowReactions(false);
+                    }}
+                  >
+                    {emoji}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {isOwn && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button
-                  key={emoji}
                   variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 hover:scale-125 transition-transform"
-                  onClick={() => {
-                    onAddReaction(message.id, emoji);
-                    setShowReactions(false);
-                  }}
+                  size="icon"
+                  className="h-6 w-6"
                 >
-                  {emoji}
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {onHideMessage && (
+                  <DropdownMenuItem onClick={() => onHideMessage(message.id)}>
+                    <EyeOff className="h-4 w-4 mr-2" />
+                    Masquer
+                  </DropdownMenuItem>
+                )}
+                {onDeleteMessage && (
+                  <DropdownMenuItem 
+                    onClick={() => onDeleteMessage(message.id)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Supprimer
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ export interface Message {
     longitude: number;
   };
   fileName?: string;
+  hidden?: boolean;
 }
 
 export interface Contact {

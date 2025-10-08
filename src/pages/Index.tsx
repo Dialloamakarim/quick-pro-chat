@@ -57,6 +57,26 @@ const Index = () => {
     }));
   };
 
+  const handleHideMessage = (messageId: string) => {
+    if (!selectedContactId) return;
+
+    setMessages((prev) => ({
+      ...prev,
+      [selectedContactId]: prev[selectedContactId].map((msg) =>
+        msg.id === messageId ? { ...msg, hidden: true } : msg
+      ),
+    }));
+  };
+
+  const handleDeleteMessage = (messageId: string) => {
+    if (!selectedContactId) return;
+
+    setMessages((prev) => ({
+      ...prev,
+      [selectedContactId]: prev[selectedContactId].filter((msg) => msg.id !== messageId),
+    }));
+  };
+
   const selectedContact = allConversations.find((c) => c.id === selectedContactId) || null;
   const currentMessages = selectedContactId ? messages[selectedContactId] || [] : [];
 
@@ -82,6 +102,8 @@ const Index = () => {
             onSendMessage={handleSendMessage}
             onToggleRead={() => {}}
             onAddReaction={handleAddReaction}
+            onHideMessage={handleHideMessage}
+            onDeleteMessage={handleDeleteMessage}
             onBack={() => setSelectedContactId(null)}
           />
         </div>

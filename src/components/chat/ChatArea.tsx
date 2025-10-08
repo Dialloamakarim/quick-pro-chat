@@ -16,6 +16,8 @@ interface ChatAreaProps {
   onSendMessage: (text: string, imageUrl?: string, audioUrl?: string, location?: { latitude: number; longitude: number }) => void;
   onToggleRead: (messageId: string) => void;
   onAddReaction: (messageId: string, emoji: string) => void;
+  onHideMessage?: (messageId: string) => void;
+  onDeleteMessage?: (messageId: string) => void;
   onBack?: () => void;
 }
 
@@ -25,6 +27,8 @@ export const ChatArea = ({
   onSendMessage,
   onToggleRead,
   onAddReaction,
+  onHideMessage,
+  onDeleteMessage,
   onBack,
 }: ChatAreaProps) => {
   const { toast } = useToast();
@@ -112,6 +116,8 @@ export const ChatArea = ({
             message={message}
             isOwn={message.senderId === "me"}
             onAddReaction={onAddReaction}
+            onHideMessage={onHideMessage}
+            onDeleteMessage={onDeleteMessage}
           />
         ))}
       </div>
