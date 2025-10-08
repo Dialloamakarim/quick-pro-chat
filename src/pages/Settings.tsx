@@ -9,8 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import { ArrowLeft, User, LogOut, Camera } from 'lucide-react';
+import { ArrowLeft, User, LogOut, Camera, Loader2 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { pickImageWeb } from '@/utils/cameraManager';
+import { Capacitor } from '@capacitor/core';
 
 interface Profile {
   id: string;
@@ -26,6 +28,7 @@ const Settings = () => {
   const { toast } = useToast();
   const { user, signOut } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
@@ -86,6 +89,79 @@ const Settings = () => {
     await signOut();
   };
 
+  const handleAvatarChange = async () => {
+    if (!user || !profile) return;
+
+    try {
+      setUploadingAvatar(true);
+
+      // Pick an image
+      const imageDataUrl = await pickImageWeb();
+      
+      if (!imageDataUrl) {
+        return;
+      }
+
+      // Convert data URL to blob
+      const response = await fetch(imageDataUrl);
+      const blob = await response.blob();
+
+      // Create a unique file name
+      const fileExt = blob.type.split('/')[1];
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      // Delete old avatar if exists
+      if (profile.avatar_url) {
+        const oldPath = profile.avatar_url.split('/').slice(-2).join('/');
+        await supabase.storage.from('avatars').remove([oldPath]);
+      }
+
+      // Upload new avatar
+      const { error: uploadError, data } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, blob, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // Update local state
+      setProfile({ ...profile, avatar_url: publicUrl });
+
+      toast({
+        title: 'Succès',
+        description: 'Photo de profil mise à jour',
+      });
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast({
+        title: 'Erreur',
+        description: 'Impossible de mettre à jour la photo de profil',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   if (!profile) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -127,9 +203,19 @@ const Settings = () => {
                   {profile.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
                 </AvatarFallback>
               </Avatar>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Camera className="h-4 w-4" />
-                Changer la photo
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2"
+                onClick={handleAvatarChange}
+                disabled={uploadingAvatar}
+              >
+                {uploadingAvatar ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
+                {uploadingAvatar ? 'Téléchargement...' : 'Changer la photo'}
               </Button>
             </div>
 
